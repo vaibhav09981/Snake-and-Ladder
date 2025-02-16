@@ -3,25 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
+    <title>Snake and Ladder</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Tic Tac Toe</h1>
-    <div class="board">
-        <div class="cell" data-index="0"></div>
-        <div class="cell" data-index="1"></div>
-        <div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div>
-        <div class="cell" data-index="4"></div>
-        <div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div>
-        <div class="cell" data-index="7"></div>
-        <div class="cell" data-index="8"></div>
+    <h1>Snake and Ladder</h1>
+    <div class="game-container">
+        <div class="board">
+            </div>
+        <div class="controls">
+            <button id="rollButton">Roll Dice</button>
+            <div id="diceValue"></div>
+            <div id="playerTurn"></div>
+        </div>
     </div>
-    <div class="message"></div>
-    <button id="resetButton">Reset</button>
-
     <script src="script.js"></script>
 </body>
 </html>
