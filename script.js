@@ -1,72 +1,86 @@
 // script.js
-const cells = document.querySelectorAll('.cell');
-const message = document.querySelector('.message');
-const resetButton = document.getElementById('resetButton');
+const board = document.querySelector('.board');
+const rollButton = document.getElementById('rollButton');
+const diceValueDisplay = document.getElementById('diceValue');
+const playerTurnDisplay = document.getElementById('playerTurn');
 
-let currentPlayer = 'X';
-let gameBoard = ['', '', '', '', '', '', '', '', ''];
-let gameActive = true;
+const gridSize = 10;
+let players = [{ position: 0 }, { position: 0 }]; // Two players
+let currentPlayerIndex = 0;
+let gameOver = false;
 
-const winningCombinations = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-];
-
-function handleCellClick(event) {
-    const cell = event.target;
-    const index = cell.dataset.index;
-
-    if (gameBoard[index] !== '' || !gameActive) {
-        return;
-    }
-
-    gameBoard[index] = currentPlayer;
-    cell.textContent = currentPlayer;
-
-    checkWin();
-    switchPlayer();
+// Create the board
+for (let i = gridSize * gridSize - 1; i >= 0; i--) {
+    const cell = document.createElement('div');
+    cell.classList.add('cell');
+    cell.textContent = i + 1; // Cell number for easy visualization
+    board.appendChild(cell);
 }
 
-function checkWin() {
-    for (let combo of winningCombinations) {
-        const [a, b, c] = combo;
-        if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
-            message.textContent = `${currentPlayer} wins!`;
-            gameActive = false;
+const cells = document.querySelectorAll('.cell');
+
+// Add players to the board (initially at position 0)
+function updatePlayerPosition(playerIndex) {
+    const player = players[playerIndex];
+    const cell = cells[player.position];
+    const playerDiv = document.createElement('div');
+    playerDiv.classList.add('player');
+    if (playerIndex === 1) {
+        playerDiv.classList.add('player1');
+    }
+    cell.appendChild(playerDiv); // Add player to cell
+}
+
+updatePlayerPosition(0);
+updatePlayerPosition(1);
+
+const snakes = {
+    16: 6, 47: 26, 49: 11, 56: 53, 64: 24, 87: 18, 93: 68, 98: 65
+};
+
+const ladders = {
+    1: 38, 4: 14, 9: 31, 21: 42, 28: 84, 51: 67, 72: 91, 80: 99
+};
+
+rollButton.addEventListener('click', () => {
+    if (gameOver) return; // Game is over, no more rolls
+
+    const diceValue = Math.floor(Math.random() * 6) + 1;
+    diceValueDisplay.textContent = `Dice: ${diceValue}`;
+
+    const currentPlayer = players[currentPlayerIndex];
+    let newPosition = currentPlayer.position + diceValue;
+
+
+    if (newPosition < gridSize * gridSize) {  //check for exceeding board
+        if (snakes[newPosition]) {
+            newPosition = snakes[newPosition];
+            alert("Ouch! Snake");
+        } else if (ladders[newPosition]) {
+            newPosition = ladders[newPosition];
+            alert("Yay! Ladder");
+        }
+        
+        // Clear the player's previous position
+        const previousCell = cells[currentPlayer.position];
+        previousCell.innerHTML = ''; // Remove player div
+
+        currentPlayer.position = newPosition;
+        updatePlayerPosition(currentPlayerIndex);
+
+        // Check for win
+        if (currentPlayer.position === gridSize * gridSize - 1) {
+            playerTurnDisplay.textContent = `Player ${currentPlayerIndex + 1} wins!`;
+            gameOver = true;
+            rollButton.disabled = true; // Disable the roll button
             return;
         }
+
+        currentPlayerIndex = 1 - currentPlayerIndex; // Switch players (0 <-> 1)
+        playerTurnDisplay.textContent = `Player ${currentPlayerIndex + 1}'s turn`;
+    } else {
+        alert("Can't move beyond board");
     }
+});
 
-    // Check for a tie
-    if (!gameBoard.includes('')) {
-        message.textContent = "It's a tie!";
-        gameActive = false;
-    }
-}
-
-function switchPlayer() {
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    if (gameActive) { // Only update the message if the game is still active
-        message.textContent = `It's ${currentPlayer}'s turn`;
-    }
-}
-
-function resetGame() {
-    currentPlayer = 'X';
-    gameBoard = ['', '', '', '', '', '', '', '', ''];
-    gameActive = true;
-    message.textContent = `It's ${currentPlayer}'s turn`;
-    cells.forEach(cell => cell.textContent = '');
-}
-
-cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-resetButton.addEventListener('click', resetGame);
-
-// Initial message
-message.textContent = `It's ${currentPlayer}'s turn`;
+playerTurnDisplay.textContent = `Player ${currentPlayerIndex + 1}'s turn`; // Initial display
