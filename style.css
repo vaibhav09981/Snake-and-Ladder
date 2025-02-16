@@ -7,57 +7,72 @@ body {
     justify-content: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #1a2430; /* Dark blue background */
-    color: white; /* White text color for the body */
+    background-color: #f0f0f0;
 }
 
 h1 {
-    color: white; /* White heading */
     margin-bottom: 20px;
+}
+
+.game-container {
+    display: flex; /* Use flexbox for layout */
+    gap: 20px;       /* Space between board and controls */
 }
 
 .board {
     display: grid;
-    grid-template-columns: repeat(3, 100px);
-    grid-gap: 5px;
-    border: 2px solid #6f42c1; /* Purple border */
-    background-color: #6f42c1; /* Purple board background */
+    grid-template-columns: repeat(10, 50px); /* 10x10 board */
+    grid-template-rows: repeat(10, 50px);
+    width: 500px;
+    height: 500px;
+    border: 2px solid #333;
+    background-color: #eee;
 }
 
 .cell {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #9974c0; /* Lighter purple cell borders */
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 48px;
-    cursor: pointer;
-    color: white; /* White X and O symbols */
+    font-size: 20px;
 }
 
-.cell:hover {
-    background-color: #8e62c9; /* Slightly lighter purple on hover */
+.player {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* Make it a circle */
+    position: absolute; /* To position it within the cell */
+    background-color: red; /* Or any color you like */
 }
 
-.message {
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: white; /* White message text */
+.player.player1 {
+    background-color: blue; /* Different color for player 1 */
 }
 
-#resetButton {
-    margin-top: 20px;
+.controls {
+    display: flex;
+    flex-direction: column; /* Stack controls vertically */
+    align-items: center;   /* Center the controls */
+}
+
+#rollButton {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #6f42c1; /* Purple button */
+    margin-bottom: 10px;
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-#resetButton:hover {
-    background-color: #573390; /* Darker purple on hover */
+#diceValue {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+#playerTurn {
+    font-size: 18px;
 }
